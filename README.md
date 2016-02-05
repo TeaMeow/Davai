@@ -63,6 +63,8 @@ $davai->map('GET', '/user/{i:userId}', function($userId)
 });
 ```
 
+&nbsp;
+
 最後拜訪 `/user/123` 你應該會得到下列的結果。
 
 ```php

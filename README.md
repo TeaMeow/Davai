@@ -57,7 +57,7 @@ $davai = Davai();
 你可以再詳細的教學文件中找到說明。
 
 ```php
-$davai->map('GET', '/user/{i:userId}', function($userId)
+$davai->get('/user/{i:userId}', function($userId)
 {
     echo '抓到了！你正要讀取編號為 ' . $userId . ' 的使用者對吧！';
 });

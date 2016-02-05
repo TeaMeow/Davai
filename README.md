@@ -76,3 +76,9 @@ $davai->get('/user/{i:userId}', function($userId)
 # 可參考文件
 
 [dannyvankooten@AltoRouter](https://github.com/dannyvankooten/AltoRouter)
+
+[Laravel - HTTP Routing](https://ihower.tw/blog/archives/6483)
+
+[HTTP Verbs: 談 POST, PUT 和 PATCH 的應用](https://laravel.tw/docs/5.2/routing)
+
+[Using HTTP Methods for RESTful Services](http://www.restapitutorial.com/lessons/httpmethods.html)

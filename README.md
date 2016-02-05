@@ -47,7 +47,7 @@ RewriteRule . index.php [L]
 接著初始化你的前行者，像下面這樣。
 
 ```php
-$davai = Davai();
+$davai = new Davai();
 ```
 
 &nbsp;

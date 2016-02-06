@@ -3,6 +3,10 @@ class Davai
 {
     /**
      * Routes
+     * 
+     * Stores the data of the routes so we can generate a reversed route from here.
+     * 
+     * @var array
      */
      
     private $routes = [];
@@ -10,7 +14,7 @@ class Davai
     /**
      * Current URL
      * 
-     * Current URL.
+     * The current URL.
      * 
      * @var string
      */
@@ -33,13 +37,41 @@ class Davai
     /**
      * Variables
      * 
+     * Stores the variables for passing though the functions.
+     * 
      * @var array
      */
      
     private $variables = [];
     
+    /**
+     * Parsed URL
+     * 
+     * Convert the url string to the array, split by the slash.
+     * 
+     * @var array
+     */
+     
     private $parsedUrl   = [];
+    
+    /**
+     * Parsed Path
+     * 
+     * Same as the $parsedUrl, but the path instead of the current url.
+     * 
+     * @var array
+     */
+     
     private $parsedPath  = [];
+    
+    /**
+     * Parsed Group
+     * 
+     * We combined the parsed path and the parsed url together, and stores them to here, also added some extra informations.
+     * 
+     * @var array
+     */
+     
     private $parsedGroup = [];
     
     
@@ -51,7 +83,36 @@ class Davai
      
     function __construct()
     {
+        /** Set the current url */
         $this->url = $_SERVER['REQUEST_URI'];
+    }
+    
+    
+    
+    
+    /**
+     * CALL
+     * 
+     * @param string $name   The function name.
+     * @param array  $args   The arguments.
+     */
+     
+    function __call($name, $args)
+    {
+        switch($name)
+        {
+            case 'get'   :
+            case 'post'  :
+            case 'put'   :
+            case 'delete':
+            case 'patch' :
+                $path      = $args[0];
+                $func      = $args[1];
+                $routeName = isset($args[2]) ? $args[2] : null;
+
+                return $this->map(strtoupper($name), $path, $func, $routeName);
+                break;
+        }
     }
     
     
@@ -60,16 +121,16 @@ class Davai
     /**
      * Map
      * 
-     * @param string      $method
-     * @param string      $path
-     * @param mixed       $func
-     * @param string|null $name
+     * The url mapping function, here to capture the urls.
+     * 
+     * @param string      $method   The method, ex: GET, POST, DELETE.
+     * @param string      $path     The path of the route.
+     * @param mixed       $func     The callback function, can be a anonymous function or a function name, or even 'class@function'.
+     * @param string|null $name     The name of the route for reverse routing.
      */
     
     function map($method, $path, $func, $name = null)
     {
-        
-        
         /** Separate the path by the slash */
         $path             = explode('/', $path);
         $this->parsedPath = array_filter(array_map('trim', $path));
@@ -78,68 +139,100 @@ class Davai
         $url              = explode('/', $this->url);
         $this->parsedUrl  = array_filter(array_map('trim', $url));
         
-        
+        /** Group the path and the url together */
         $this->groupUrl();
+        
+        /** Save the route to the routes array for reverse routing when the name is not a null */
+        if($name !== null)
+            $this->storeRoute($name, $this->parsedGroup);
       
+        /** Validate the rules with the current url */
         if(!$this->validateRules())
             return false;
         
+        /** Convert the captured url contents to the variables */
         $this->analyzeVariables();
 
-        if($name !== null)
-            $this->storeRoute($name, $this->parsedGroup);
-
-
+        /** The method must be right, or GGWP */
         if($_SERVER['REQUEST_METHOD'] !== strtoupper($method))
             return false;
         
+        /** Parse the function name when it's a string not a REAL function */
         if(is_string($func))
         {
+            /** If there's a hashtag in it, we split the string by it, get the class name and the function name */
             if(strpos($func, '#') !== false)
             {
                 $funcGroup = explode('#', $func);
                 $className = $funcGroup[0];
                 $funcName  = $funcGroup[1];
                 
+                /** Call the callback which inside of the class */
                 call_user_func_array([$className, $funcName], $this->variables);
-            }
-            else
-            {
-                call_user_func_array($func, $this->variables);
             }
         }
         else
         {
+            /** Or just call the callback directly */
             call_user_func_array($func, $this->variables);
         }
     }
     
     
-    function reverse($name, $variables)
+    
+    
+    /**
+     * Generate
+     * 
+     * Generate the reversed route path.
+     * 
+     * @param string $name        The name of the route.
+     * @param array  $variables   The variables, key as the variable name.
+     * 
+     * @return string|bool
+     */
+    
+    function generate($name, $variables)
     {
         if(!isset($this->routes[$name]))
             return false;
         
         $link = '';
         
+        /** Analyze the paths, and apply the variables, convert them back into a string */
         foreach($this->routes[$name]['paths'] as $singlePartial)
         {
             $variableName = $singlePartial['variable'];
             
+            /** Just use the variable name as the path when it's a "pure" variable */
             if($singlePartial['isPure'])
                 $link .= $variableName . '/';
             else
+                /** Or get the value for the variable and replace it */
                 if(isset($variables[$variableName]))
                     $link .= $variables[$variableName] . '/';
+                /** Stop parsing the path if there's no matched value for this variable */
                 else
                     break;
-                                                          
         }
         
         return $link;
     }
     
     
+    
+    
+    /**
+     * Store Route
+     * 
+     * Parse the group and stores them to the routes array so we can reverse routing with it.
+     * 
+     * @param string $name    The name of the route.
+     * @param array  $group   The parsed group.
+     * 
+     * @return Davai
+     */
+     
     function storeRoute($name, $group)
     {
         $paths = [];
@@ -153,8 +246,24 @@ class Davai
         }
             
         $this->routes[$name] = ['paths' => $paths];
+        
+        return $this;
     }
     
+    
+    
+    
+    /**
+     * Add Rule
+     * 
+     * Add a custom rule.
+     * 
+     * @param string $name    The shorthand of the rule.
+     * @param string $regEx   The regEx.
+     * 
+     * @return Davai
+     */
+     
     function addRule($name, $regEx)
     {
         $this->rules[$name] = $regEx;
@@ -163,9 +272,14 @@ class Davai
     }
     
     
+    
+    
     /**
      * Validate Rules
      * 
+     * Make sure the current url is valid with the rules.
+     * 
+     * @return bool
      */
     
     function validateRules()
@@ -174,9 +288,11 @@ class Davai
         {
             extract($singleGroup);
             
+            /** Skip when it's a pure rule and the rule name is same as the captured content */
             if($isPure && $rule == $content)
                 continue;
             
+            /** Skip it when it's a lazy rule and we captured the empty content */
             if($isLazy && !$content)
                 continue;
             
@@ -184,6 +300,7 @@ class Davai
             
             preg_match($regEx, $content, $matched);
            
+            /** False if the regEx matched the different content */
             if($content != $matched[0])
                 return false;
         }
@@ -195,7 +312,13 @@ class Davai
     
     
     /**
-     * Get Rules
+     * Get Rule
+     * 
+     * Convert a string to a regEx or get the regEx from the rule list.
+     * 
+     * @param  string $ruleName   The name of the rule.
+     * 
+     * @return string
      */
      
     function getRule($ruleName)
@@ -216,6 +339,9 @@ class Davai
     /**
      * Analyze Variables
      * 
+     * Make the captured url contents as a pair with the rules.
+     * 
+     * @return Davai
      */
     
     function analyzeVariables()
@@ -231,6 +357,8 @@ class Davai
             if($variableName)
                 array_push($this->variables, $content);
         }
+        
+        return $this;
     }
     
     
@@ -238,6 +366,10 @@ class Davai
     
     /**
      * Group URL
+     * 
+     * Separate the rule tags, and match it with the url content, then stores to a the parsed group array.
+     * 
+     * @return Davai
      */
     
     function groupUrl()
@@ -245,12 +377,12 @@ class Davai
         foreach($this->parsedPath as $index => $singlePath)
         {
             $matchedUrl = isset($this->parsedUrl[$index]) ? $this->parsedUrl[$index] : false;
-            $partial  = $this->separatePartial($singlePath, $matchedUrl);
-        
-                
-                
+            $partial    = $this->separatePartial($singlePath, $matchedUrl);
+
             $this->parsedGroup[] = $partial;
         }
+        
+        return $this;
     }
     
     
@@ -258,6 +390,13 @@ class Davai
     
     /**
      * Separate Partial
+     * 
+     * Separate the rule tag, and parse it, also match it with the same level url content then return the whole informations.
+     * 
+     * @param string $partial          The rule tag.
+     * @param string $matchedContent   The matched url content.
+     * 
+     * @return array
      */
     
     function separatePartial($partial, $matchedContent)
@@ -265,13 +404,9 @@ class Davai
         $isLazy      = substr($partial, -2, 1) === '?';
         $isTag       = substr($partial,  0, 1) === '[';
         
-        //if(!$isTag)
-        //    return false;
-        
         $parsedPartial = explode(':', $partial);
         $rule          = ltrim($parsedPartial[0], '[');
         $variable      = rtrim($parsedPartial[1], $isLazy ? '?]' : ']');
-        
         
         return ['rule'     => $rule,
                 'variable' => $variable !== '' ? $variable : false,
@@ -279,25 +414,5 @@ class Davai
                 'isPure'   => !$isTag,
                 'content'  => $matchedContent];
     }
-    
-    function __call($name, $args)
-    {
-        switch($name)
-        {
-            case 'get'   :
-            case 'post'  :
-            case 'put'   :
-            case 'delete':
-            case 'patch' :
-                $path = $args[0];
-                $func = $args[1];
-                $name = isset($args[2]) ? $args[2] : null;
-
-                return $this->map(strtoupper($name), $path, $func, $name);
-                break;
-        }
-        
-    }
-
 }
 ?>

@@ -9,10 +9,10 @@ class Davai
                        
     private $url = '';
     
-    public $rules = ['*' => '(.+?)',
-                     'i' => '([0-9]++)',
-                     'a' => '([0-9A-Za-z]++)',
-                     'h' => '([0-9A-Fa-f]++)'];
+    public $rules = ['*' => '.+?',
+                     'i' => '[0-9]++',
+                     'a' => '[0-9A-Za-z]++',
+                     'h' => '[0-9A-Fa-f]++'];
     
     
     private $variables = [];
@@ -40,11 +40,31 @@ class Davai
         
         
         $this->groupUrl();
-        $this->validateRules();
+        
+        if(!$this->validateRules())
+            return false;
+        
         $this->analyzeVariables();
-        
-        
-        e($this->parsedPath);
+
+        if(is_string($func))
+        {
+            if(strpos($func, '#') !== false)
+            {
+                $funcGroup = explode('@', $func);
+                $className = $funcGroup[0];
+                $funcName  = $funcGroup[1];
+                
+                call_user_func_array([$className, $funcName], $this->variables);
+            }
+            else
+            {
+                call_user_func_array($func, $this->variables);
+            }
+        }
+        else
+        {
+            call_user_func_array($func, $this->variables);
+        }
     }
     
     
@@ -57,23 +77,31 @@ class Davai
             
             if($isPure && $rule == $content)
                 continue;
+            
+            if($isLazy && !$content)
+                continue;
+            
+            $regEx = $this->getRule($rule);
+            
+            preg_match($regEx, $content, $matched);
+           
+            if($content != $matched[0])
+                return false;
         }
         
-        e($this->parsedGroup);
+        return true;
     }
     
     function getRule($ruleName)
     {
-        $isSplit = strpos($rulePartial, '|') !== false;
+        $isSplit = strpos($ruleName, '|') !== false;
         
         if($isSplit)
-        {
-            return '^(' + $isSplit ')$';
-        }
+            return '/^(' . $ruleName . ')$/';
+        elseif(isset($this->rules[$ruleName]))
+            return '/^(' . $this->rules[$ruleName] . ')$/';
         else
-        {
-            
-        }
+            return '/^(' . $ruleName . ')$/';
     }
     
     
@@ -87,8 +115,10 @@ class Davai
             
             
             if($variableName)
-                $this->variables[$variableName] = $content;
+                array_push($this->variables, $content);
         }
+        
+        
     }
     
     

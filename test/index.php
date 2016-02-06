@@ -16,8 +16,8 @@ class A
 }
 
 
-$davai->get('POST', '/test/user/[i:userId]/[i:page?]', 'A#B', 'A');
+$davai->get('/test/user/[i:userId]/[i:page?]', 'A#B', 'A');
 
-echo $davai->reverse('A', ['userId' => 3,
+echo $davai->generate('A', ['userId' => 3,
                            'page'   => 123123]);
 ?>

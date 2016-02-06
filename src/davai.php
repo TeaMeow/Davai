@@ -68,6 +68,8 @@ class Davai
     
     function map($method, $path, $func, $name = null)
     {
+        
+        
         /** Separate the path by the slash */
         $path             = explode('/', $path);
         $this->parsedPath = array_filter(array_map('trim', $path));
@@ -88,6 +90,9 @@ class Davai
             $this->storeRoute($name, $this->parsedGroup);
 
 
+        if($_SERVER['REQUEST_METHOD'] !== strtoupper($method))
+            return false;
+        
         if(is_string($func))
         {
             if(strpos($func, '#') !== false)
@@ -131,7 +136,7 @@ class Davai
                                                           
         }
         
-        e($link);
+        return $link;
     }
     
     
@@ -150,7 +155,12 @@ class Davai
         $this->routes[$name] = ['paths' => $paths];
     }
     
-    
+    function addRule($name, $regEx)
+    {
+        $this->rules[$name] = $regEx;
+        
+        return $this;
+    }
     
     
     /**
@@ -210,6 +220,8 @@ class Davai
     
     function analyzeVariables()
     {
+        $this->variables = [];
+        
         foreach($this->parsedGroup as $singleGroup)
         {
             $variableName = $singleGroup['variable'];
@@ -267,5 +279,25 @@ class Davai
                 'isPure'   => !$isTag,
                 'content'  => $matchedContent];
     }
+    
+    function __call($name, $args)
+    {
+        switch($name)
+        {
+            case 'get'   :
+            case 'post'  :
+            case 'put'   :
+            case 'delete':
+            case 'patch' :
+                $path = $args[0];
+                $func = $args[1];
+                $name = isset($args[2]) ? $args[2] : null;
+
+                return $this->map(strtoupper($name), $path, $func, $name);
+                break;
+        }
+        
+    }
+
 }
 ?>

@@ -7,8 +7,13 @@ include '../src/davai.php';
 
 $davai = new Davai();
 
-$davai->map('GET', '/test/{i:test}', function($test)
+class A
 {
-    echo "adsasasd";
-})
+    function B()
+    {
+        echo 'asdasd';
+    }
+}
+
+$davai->map('GET', '/test/user/[i:userId]/[i:page?]', 'User#newUser');
 ?>

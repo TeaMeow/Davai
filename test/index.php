@@ -15,5 +15,10 @@ class A
     }
 }
 
-$davai->map('GET', '/test/user/[i:userId]/[i:page?]', 'User#newUser');
+
+
+$davai->map('GET', '/test/user/[i:userId]/[i:page?]', 'A#B', 'A');
+
+echo $davai->reverse('A', ['userId' => 3,
+                           'page'   => 123123]);
 ?>

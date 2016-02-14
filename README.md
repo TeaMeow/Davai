@@ -93,3 +93,7 @@ $davai->get('/user/{i:userId}', function($userId)
 [HTTP Verbs: 談 POST, PUT 和 PATCH 的應用](https://laravel.tw/docs/5.2/routing)
 
 [Using HTTP Methods for RESTful Services](http://www.restapitutorial.com/lessons/httpmethods.html)
+
+[Accessing Incoming PUT Data from PHP](http://www.lornajane.net/posts/2008/accessing-incoming-put-data-from-php)
+
+[PHP detecting request type (GET, POST, PUT or DELETE)](http://stackoverflow.com/questions/359047/php-detecting-request-type-get-post-put-or-delete)

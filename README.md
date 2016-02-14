@@ -38,8 +38,19 @@
 
 ```
 RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule . index.php [L]
+# PHP Extension To None PHP Extension
+# RewriteRule ^ /%1 [R=301,NE,L]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/(.+)\.php[^\s]* [NC]
+RewriteRule ^ - [R=404,L]
+
+
+# Hide Extension Of PHP
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteCond %{REQUEST_FILENAME} !-l 
+RewriteRule ^(.+?)/?$ $1.php [L]
+
+RewriteRule ^.*$ index.php
 ```
 
 &nbsp;

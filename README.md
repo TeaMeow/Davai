@@ -63,12 +63,12 @@ $davai = new Davai();
 
 &nbsp;
 
-接下來開始撰寫路徑，其中的 `{i:userID}` 的 `i` 意思是任何數字，而 `userID` 則是變數名稱，
+接下來開始撰寫路徑，其中的 `[i:userID]` 的 `i` 意思是任何數字，而 `userID` 則是變數名稱，
 
 你可以再詳細的教學文件中找到說明。
 
 ```php
-$davai->get('/user/{i:userId}', function($userId)
+$davai->get('/user/[i:userId]', function($userId)
 {
     echo '抓到了！你正要讀取編號為 ' . $userId . ' 的使用者對吧！';
 });

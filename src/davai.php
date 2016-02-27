@@ -131,7 +131,9 @@ class Davai
 
     function map($method, $path, $func, $name = null)
     {
+        /** Clean the last parsed group */
         $this->parsedGroup = [];
+
         /** Separate the path by the slash */
         $path             = explode('/', $path);
         $this->parsedPath = array_filter(array_map('trim', $path));
@@ -297,46 +299,52 @@ class Davai
 
             extract($singleGroup);
 
+            /** When this is the last partial */
             if($index == $length - 1)
-            {
 
-                if(!$isLazy && !isset($this->parsedUrl[$index + 1]) && !$isPure)
-                {
-                    echo '1';
+                /** Return false if it's not a lazy partial, and there's no more partials in the url, */
+                /** and this last partial is not a pure partial */
+                /** ex: "/public/[i:userId]" but "/public/" in the url */
+                if(!$isPure && !$isLazy && !isset($this->parsedUrl[$index + 1]))
                     return false;
-                }
-                elseif(!$isLazy && isset($this->parsedUrl[$index + 1]) && !$content)
-                {
-                    echo '2';
-                    return false;
-                }
-            }
+
+
+                //elseif(!$isLazy && isset($this->parsedUrl[$index + 1]) && !$content)
+                //    return false;
 
 
 
-            /** Skip when it's a pure rule and the rule name is same as the captured content */
+            /** Return false if it's a pure rule but not the same as the captured content */
+            if($isPure && $rule != $content)
+                return false;
+
+
+            /** Skip when it's a pure rule and the same as the captured content, */
             if($isPure && $rule == $content)
+
+                /** But return false if this partial is the last one, and there's more partials in the url */
+                /** ex: "/hello/" but "/hello/world/" in the url */
                 if($index == $length - 1 && $index < $urlLength - 1)
                     return false;
+
+                /** Going to the next partial if there's more partials in the url */
                 elseif($index != $urlLength - 1)
                     continue;
 
 
+            /** Skip it when it's a lazy rule, */
+            if($isLazy)
 
-            /** Skip it when it's a lazy rule and we captured the empty content */
-            if($isLazy && !$content)
-                return true;
+                /** and we captured the empty content, */
+                if(!$content)
+                    return true;
 
 
-
-            if($isPure && $rule != $content)
-                return false;
-
+            /** Use regEx to validate the captured content */
             $regEx = $this->getRule($rule);
-
             preg_match($regEx, $content, $matched);
 
-            /** False if the regEx matched the different content */
+            /** Return false if the content is not matched with the regEx */
             if($content != $matched[0])
                 return false;
         }

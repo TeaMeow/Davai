@@ -450,7 +450,7 @@ class Davai
 
         $parsedPartial = explode(':', $partial);
         $rule          = ltrim($parsedPartial[0], '[');
-        $variable      = rtrim($parsedPartial[1], $isLazy ? '?]' : ']');
+        $variable      = isset($parsedPartial[1]) ? rtrim($parsedPartial[1], $isLazy ? '?]' : ']') : '';
 
         return ['rule'     => $rule,
                 'variable' => $variable !== '' ? $variable : false,

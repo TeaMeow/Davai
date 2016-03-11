@@ -127,6 +127,8 @@ class Davai
      * @param string      $path     The path of the route.
      * @param mixed       $func     The callback function, can be a anonymous function or a function name, or even 'class@function'.
      * @param string|null $name     The name of the route for reverse routing.
+     *
+     * @return Davai
      */
 
     function map($method, $path, $func, $name = null)
@@ -139,7 +141,7 @@ class Davai
         $this->parsedPath = array_filter(array_map('trim', $path));
 
         /** Separate the current url by the slash */
-        $url              = explode('/', $this->url);
+        $url              = explode('/', strtok($this->url, '?'));
         $this->parsedUrl  = array_filter(array_map('trim', $url));
 
         /** Group the path and the url together */
@@ -151,14 +153,14 @@ class Davai
 
         /** Validate the rules with the current url */
         if(!$this->validateRules())
-            return false;
+            return $this;
 
         /** Convert the captured url contents to the variables */
         $this->analyzeVariables();
 
         /** The method must be right, or GGWP */
         if($_SERVER['REQUEST_METHOD'] !== strtoupper($method))
-            return false;
+            return $this;
 
 
 
@@ -181,6 +183,8 @@ class Davai
             /** Or just call the callback directly */
             call_user_func_array($func, $this->variables);
         }
+
+        return $this;
     }
 
 

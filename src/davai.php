@@ -9,7 +9,7 @@ class Davai
      * @var array
      */
 
-    private $routes = [];
+    public $routes = [];
 
     /**
      * Current URL
@@ -74,6 +74,8 @@ class Davai
 
     private $parsedGroup = [];
 
+    private $records = [];
+
 
 
 
@@ -112,7 +114,53 @@ class Davai
 
                 return $this->map(strtoupper($name), $path, $func, $routeName);
                 break;
+
+            case 'recordGet'   :
+            case 'recordPost'  :
+            case 'recordPut'   :
+            case 'recordDelete':
+            case 'recordPatch' :
+                $recordName = $args[0];
+                $path       = $this->records[$recordName];
+                $func       = $args[1];
+                $name       = substr($name, 6);
+
+                $this->map(strtoupper($name), $path, $func);
+
+                return $this;
+                break;
         }
+    }
+
+
+
+
+    /**
+     * Record
+     *
+     */
+
+    function record($records)
+    {
+        $this->records = $records;
+
+
+        foreach($records as $name => $path)
+        {
+            /** Separate the path by the slash */
+            $path        = explode('/', $path);
+            $parsedPath  = array_filter(array_map('trim', $path));
+
+            /** Separate the current url by the slash */
+            $url         = explode('/', strtok($this->url, '?'));
+            $parsedUrl   = array_filter(array_map('trim', $url));
+
+            $parsedGroup = $this->groupUrl($parsedPath, $parsedUrl);
+
+            $this->storeRoute($name, $parsedGroup);
+        }
+
+        return $this;
     }
 
 
@@ -201,7 +249,7 @@ class Davai
      * @return string|bool
      */
 
-    function generate($name, $variables)
+    function generate($name, $variables = null)
     {
         if(!isset($this->routes[$name]))
             return false;
@@ -420,17 +468,28 @@ class Davai
      * @return Davai
      */
 
-    function groupUrl()
+    function groupUrl($parsedPath = null, $parsedUrl = null)
     {
-        foreach($this->parsedPath as $index => $singlePath)
+        $isAlone     = $parsedPath != null;
+        $parsedPath  = $parsedPath ?: $this->parsedPath;
+        $parsedUrl   = $parsedUrl  ?: $this->parsedUrl;
+        $parsedGroup = [];
+
+
+
+
+        foreach($parsedPath as $index => $singlePath)
         {
-            $matchedUrl = isset($this->parsedUrl[$index]) ? $this->parsedUrl[$index] : false;
+            $matchedUrl = isset($parsedUrl[$index]) ? $parsedUrl[$index] : false;
             $partial    = $this->separatePartial($singlePath, $matchedUrl);
 
-            $this->parsedGroup[] = $partial;
+            if($isAlone)
+                $parsedGroup[] = $partial;
+            else
+                $this->parsedGroup[] = $partial;
         }
 
-        return $this;
+        return $parsedGroup;
     }
 
 

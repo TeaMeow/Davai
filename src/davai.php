@@ -76,6 +76,7 @@ class Davai
 
     private $records = [];
 
+    private $basePath = '';
 
 
 
@@ -136,6 +137,26 @@ class Davai
 
 
     /**
+     * Set Base Path
+     *
+     *
+     *
+     * @param
+     *
+     * @return Davai
+     */
+
+    function setBasePath($path)
+    {
+        $this->basePath = $path;
+
+        return $this;
+    }
+
+
+
+
+    /**
      * Record
      *
      */
@@ -183,6 +204,9 @@ class Davai
     {
         /** Clean the last parsed group */
         $this->parsedGroup = [];
+
+        /** Path with the base path */
+        $path = $this->basePath . $path;
 
         /** Separate the path by the slash */
         $path             = explode('/', $path);

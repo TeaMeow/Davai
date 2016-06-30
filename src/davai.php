@@ -87,7 +87,7 @@ class Davai
     function __construct()
     {
         /** Set the current url */
-        $this->url = $_SERVER['REQUEST_URI'];
+        $this->url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : NULL;
     }
 
 

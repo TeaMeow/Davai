@@ -40,6 +40,21 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $GLOBALS['SUCCESS']);
     }
 
+    function testRouteWithAnonymouseFunction()
+    {
+        $Davai                     = new Davai();
+        $_SERVER['REQUEST_URI']    = '/test/user';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $isSuccess                 = false;
+
+        $Davai->get('/test/user', function(use $isSuccess)
+        {
+            $isSuccess = true;
+        });
+
+        $this->assertEquals(true, $isSuccess);
+    }
+
     function testCaptureRoute()
     {
         $Davai                     = new Davai();

@@ -123,7 +123,10 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
 
     function testRecordPath()
     {
-        $this->Davai->recordGet('/test/user', 'a');
+        $this->Davai->record(['foo' => 'foo',
+                              'bar' => 'bar']);
+
+        $this->Davai->recordGet('foo', '/test/user');
     }
 
     function testAddRule()
@@ -138,7 +141,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $url = $this->Davai->generate('test', ['username' => 'test',
                                                'postName' => 'test']);
 
-        $this->assertEquals($url, '/test/user/test/test');
+        $this->assertEquals('test/user/test/test/', $url);
     }
 
     function testSetBasePath()

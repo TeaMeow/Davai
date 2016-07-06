@@ -207,6 +207,7 @@ class Davai
         $path             = explode('/', $path);
         $this->parsedPath = array_filter(array_map('trim', $path));
         echo "--" . $this->url . "--\n";
+        echo "--" . $path . "--\n";
         /** Separate the current url by the slash */
         $url              = explode('/', strtok($this->url, '?'));
         $this->parsedUrl  = array_filter(array_map('trim', $url));

@@ -35,7 +35,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $Davai                     = new Davai();
         $GLOBALS['SUCCESS']        = false;
 
-        $Davai->get('/test/user', 'b#A');
+        $Davai->get('/test/user', 'A#b');
 
         $this->assertEquals(true, $GLOBALS['SUCCESS']);
     }

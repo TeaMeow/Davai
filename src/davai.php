@@ -2,8 +2,6 @@
 class Davai
 {
     /**
-     * Routes
-     *
      * Stores the data of the routes so we can generate a reversed route from here.
      *
      * @var array
@@ -12,8 +10,6 @@ class Davai
     public $routes = [];
 
     /**
-     * Current URL
-     *
      * The current URL.
      *
      * @var string
@@ -22,8 +18,6 @@ class Davai
     public $url = '';
 
     /**
-     * Rules
-     *
      * The rules of the capture groups.
      *
      * @var array
@@ -35,8 +29,6 @@ class Davai
                      'h' => '[0-9A-Fa-f]++'];
 
     /**
-     * Variables
-     *
      * Stores the variables for passing though the functions.
      *
      * @var array
@@ -45,8 +37,6 @@ class Davai
     private $variables = [];
 
     /**
-     * Parsed URL
-     *
      * Convert the url string to the array, split by the slash.
      *
      * @var array
@@ -55,8 +45,6 @@ class Davai
     private $parsedUrl   = [];
 
     /**
-     * Parsed Path
-     *
      * Same as the $parsedUrl, but the path instead of the current url.
      *
      * @var array
@@ -65,8 +53,6 @@ class Davai
     private $parsedPath  = [];
 
     /**
-     * Parsed Group
-     *
      * We combined the parsed path and the parsed url together, and stores them to here, also added some extra informations.
      *
      * @var array
@@ -188,8 +174,6 @@ class Davai
 
 
     /**
-     * Map
-     *
      * The url mapping function, here to capture the urls.
      *
      * @param string      $method   The method, ex: GET, POST, DELETE.
@@ -263,8 +247,6 @@ class Davai
 
 
     /**
-     * Generate
-     *
      * Generate the reversed route path.
      *
      * @param string $name        The name of the route.
@@ -304,8 +286,6 @@ class Davai
 
 
     /**
-     * Store Route
-     *
      * Parse the group and stores them to the routes array so we can reverse routing with it.
      *
      * @param string $name    The name of the route.
@@ -335,8 +315,6 @@ class Davai
 
 
     /**
-     * Add Rule
-     *
      * Add a custom rule.
      *
      * @param string $name    The shorthand of the rule.
@@ -356,8 +334,6 @@ class Davai
 
 
     /**
-     * Validate Rules
-     *
      * Make sure the current url is valid with the rules.
      *
      * @return bool
@@ -420,8 +396,11 @@ class Davai
             $regEx = $this->getRule($rule);
             preg_match($regEx, $content, $matched);
 
+            if(!isset($matched[0]))
+                echo var_dump($content) . '||' .  var_dump($matched);
+
             /** Return false if the content is not matched with the regEx */
-            if(!isset($matched[0]) || $content != $matched[0])
+            if($content != $matched[0])
                 return false;
         }
 
@@ -432,8 +411,6 @@ class Davai
 
 
     /**
-     * Get Rule
-     *
      * Convert a string to a regEx or get the regEx from the rule list.
      *
      * @param  string $ruleName   The name of the rule.
@@ -457,8 +434,6 @@ class Davai
 
 
     /**
-     * Analyze Variables
-     *
      * Make the captured url contents as a pair with the rules.
      *
      * @return Davai
@@ -485,8 +460,6 @@ class Davai
 
 
     /**
-     * Group URL
-     *
      * Separate the rule tags, and match it with the url content, then stores to a the parsed group array.
      *
      * @return Davai
@@ -520,8 +493,6 @@ class Davai
 
 
     /**
-     * Separate Partial
-     *
      * Separate the rule tag, and parse it, also match it with the same level url content then return the whole informations.
      *
      * @param string $partial          The rule tag.

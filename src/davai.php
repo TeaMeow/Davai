@@ -211,9 +211,6 @@ class Davai
         $url              = explode('/', strtok($this->url, '?'));
         $this->parsedUrl  = array_filter(array_map('trim', $url));
 
-        echo "--" . var_dump($this->parsedPath) . "--\n";
-        echo "--" . var_dump($this->parsedUrl) . "--\n";
-
         /** Group the path and the url together */
         $this->groupUrl();
 
@@ -234,18 +231,15 @@ class Davai
 
 
         /** Parse the function name when it's a string not a REAL function */
-        if(is_string($func))
+        if(is_string($func) && strpos($func, '#') !== false)
         {
-            /** If there's a hashtag in it, we split the string by it, get the class name and the function name */
-            if(strpos($func, '#') !== false)
-            {
-                $funcGroup = explode('#', $func);
-                $className = $funcGroup[0];
-                $funcName  = $funcGroup[1];
+            /** we split the string by the hashtag, get the class name and the function name */
+            $funcGroup = explode('#', $func);
+            $className = $funcGroup[0];
+            $funcName  = $funcGroup[1];
 
-                /** Call the callback which inside of the class */
-                call_user_func_array([$className, $funcName], $this->variables);
-            }
+            /** Call the callback which inside of the class */
+            call_user_func_array([$className, $funcName], $this->variables);
         }
         else
         {

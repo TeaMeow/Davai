@@ -22,7 +22,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $Davai                     = new Davai();
         $GLOBALS['SUCCESS']        = false;
-
+        a();
         $Davai->get('/test/user', 'a');
         echo var_dump($Davai);
 

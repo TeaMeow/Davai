@@ -421,7 +421,7 @@ class Davai
             preg_match($regEx, $content, $matched);
 
             /** Return false if the content is not matched with the regEx */
-            if($content != $matched[0] || !isset($matched[0]))
+            if(!isset($matched[0]) || $content != $matched[0])
                 return false;
         }
 

@@ -3,7 +3,7 @@ require 'davai.php';
 
 class A
 {
-    function b()
+    static function b()
     {
         $GLOBALS['SUCCESS'] = true;
     }

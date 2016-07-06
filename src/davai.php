@@ -19,7 +19,7 @@ class Davai
      * @var string
      */
 
-    private $url = '';
+    public $url = '';
 
     /**
      * Rules

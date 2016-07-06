@@ -18,6 +18,14 @@ class Davai
     public $url = '';
 
     /**
+     * The current method.
+     *
+     * @var string
+     */
+
+    public $method = '';
+
+    /**
      * The rules of the capture groups.
      *
      * @var array
@@ -74,6 +82,9 @@ class Davai
     {
         /** Set the current url */
         $this->url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : NULL;
+
+        /** And the method */
+        $this->method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : '';
     }
 
 
@@ -215,7 +226,7 @@ class Davai
         $this->analyzeVariables();
 
         /** The method must be right, or GGWP */
-        if($_SERVER['REQUEST_METHOD'] !== strtoupper($method))
+        if($this->method !== strtoupper($method))
             return $this;
 
 

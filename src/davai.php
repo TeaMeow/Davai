@@ -76,6 +76,8 @@ class Davai
 
     /**
      * CONSTRUCT
+     *
+     * @codeCoverageIgnore
      */
 
     function __construct()

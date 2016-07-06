@@ -105,16 +105,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($GLOBALS['SUCCESS']);
     }
 
-    function testFalseLazyCaptureRoute()
-    {
-        $this->Davai->url    = '/test/user/abc/abc';
-        $GLOBALS['SUCCESS']  = false;
-
-        $this->Davai->get('/test/user/[a:username?]', 'a');
-
-        $this->assertFalse($GLOBALS['SUCCESS']);
-    }
-
     function testDoubleLazyCaptureRoute()
     {
         $this->Davai->url    = '/test/user/abc';
@@ -122,17 +112,44 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
 
         $this->Davai->get('/test/user/[a:username?]/[a:postName?]', 'a');
 
-        $this->assertFalse($GLOBALS['SUCCESS']);
+        $this->assertTrue($GLOBALS['SUCCESS']);
     }
 
-    function testDoubleFalseLazyCaptureRoute()
+    function testRecord()
     {
-        $this->Davai->url    = '/test/user/abc/abc/abc';
+        $this->Davai->record(['foo' => 'foo',
+                              'bar' => 'bar']);
+    }
+
+    function testRecordPath()
+    {
+        $this->Davai->recordGet('/test/user', 'a');
+    }
+
+    function testAddRule()
+    {
+        $this->Davai->addRule('s', '[0-9a-z]++');
+    }
+
+    function testReverseRouting()
+    {
+        $this->Davai->get('/test/user/[a:username?]/[a:postName?]', 'a', 'test');
+
+        $url = $this->Davai->generate('test', ['username' => 'test',
+                                               'postName' => 'test']);
+
+        $this->assertEquals($url, '/test/user/test/test');
+    }
+
+    function testSetBasePath()
+    {
+        $this->Davai->setBasePath('/public');
+        $this->Davai->url    = '/public/test/user';
         $GLOBALS['SUCCESS']  = false;
 
-        $this->Davai->get('/test/user/[a:username?]/[a:postName?]', 'a');
+        $this->Davai->get('/test/user', 'a');
 
-        $this->assertFalse($GLOBALS['SUCCESS']);
+        $this->assertTrue($GLOBALS['SUCCESS']);
     }
 }
 ?>

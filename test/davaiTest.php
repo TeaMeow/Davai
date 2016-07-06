@@ -85,7 +85,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
-        $this->Davai->get('/test/user/[i:userId]/[i:userId]', 'a');
+        $this->Davai->get('/test/user/[i:userId]/[i:postId]', 'a');
 
         $this->assertTrue($GLOBALS['SUCCESS']);
     }

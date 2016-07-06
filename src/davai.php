@@ -227,6 +227,9 @@ class Davai
         /** Convert the captured url contents to the variables */
         $this->analyzeVariables();
 
+        echo var_dump($this->method);
+        echo var_dump(strtoupper($method));
+
         /** The method must be right, or GGWP */
         if($this->method !== strtoupper($method))
             return $this;

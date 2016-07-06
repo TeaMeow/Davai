@@ -366,18 +366,17 @@ class Davai
 
             /** When this is the last partial */
             if($index == $length - 1)
+            {
 
                 /** Return false if it's not a lazy partial, and there's no more partials in the url, */
                 /** and this last partial is not a pure partial */
                 /** ex: "/public/[i:userId]" but "/public/" in the url */
                 if(!$isPure && !$isLazy && !isset($this->parsedUrl[$index + 1]))
+                {
+                    echo "K";
                     return false;
-
-
-                //elseif(!$isLazy && isset($this->parsedUrl[$index + 1]) && !$content)
-                //    return false;
-
-
+                }
+            }
 
             /** Return false if it's a pure rule but not the same as the captured content */
             if($isPure && $rule != $content)

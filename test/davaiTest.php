@@ -19,12 +19,12 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function __construct()
     {
         $this->Davai = new Davai();
+        $this->Davai->method = 'GET';
     }
 
     function testRoute()
     {
         $this->Davai->url    = '/test/user';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user', 'a');
@@ -35,7 +35,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testRouteWithClass()
     {
         $this->Davai->url    = '/test/user';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user', 'A#b');
@@ -46,7 +45,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testRouteWithAnonymouseFunction()
     {
         $this->Davai->url    = '/test/user';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user', function()
@@ -60,7 +58,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testCaptureRoute()
     {
         $this->Davai->url    = '/test/user/123';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user/[i:userId]', 'a');
@@ -71,7 +68,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testFalseCaptureRoute()
     {
         $this->Davai->url    = '/test/user/abc';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user/[i:userId]', 'a');
@@ -82,7 +78,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testDoubleCaptureRoute()
     {
         $this->Davai->url    = '/test/user/123/456';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user/[i:userId]/[i:postId]', 'a');
@@ -93,7 +88,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testDoubleFalseCaptureRoute()
     {
         $this->Davai->url    = '/test/user/abc/abc';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user/[i:userId]/[i:postId]', 'a');
@@ -104,7 +98,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testLazyCaptureRoute()
     {
         $this->Davai->url    = '/test/user';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user/[a:username?]', 'a');
@@ -115,7 +108,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testFalseLazyCaptureRoute()
     {
         $this->Davai->url    = '/test/user/abc/abc';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user/[a:username?]', 'a');
@@ -126,7 +118,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testDoubleLazyCaptureRoute()
     {
         $this->Davai->url    = '/test/user/abc';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user/[a:username?]/[a:postName?]', 'a');
@@ -137,7 +128,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testDoubleFalseLazyCaptureRoute()
     {
         $this->Davai->url    = '/test/user/abc/abc/abc';
-        $this->Davai->method = 'GET';
         $GLOBALS['SUCCESS']  = false;
 
         $this->Davai->get('/test/user/[a:username?]/[a:postName?]', 'a');

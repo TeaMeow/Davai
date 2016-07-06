@@ -206,7 +206,7 @@ class Davai
         /** Separate the path by the slash */
         $path             = explode('/', $path);
         $this->parsedPath = array_filter(array_map('trim', $path));
-
+        echo . "--" . $this->url . "--\n";
         /** Separate the current url by the slash */
         $url              = explode('/', strtok($this->url, '?'));
         $this->parsedUrl  = array_filter(array_map('trim', $url));
@@ -222,18 +222,12 @@ class Davai
         if(!$this->validateRules())
             return $this;
 
-        echo "V";
-
         /** Convert the captured url contents to the variables */
         $this->analyzeVariables();
-
-        echo var_dump($this->method);
-        echo var_dump(strtoupper($method));
 
         /** The method must be right, or GGWP */
         if($this->method !== strtoupper($method))
             return $this;
-
 
 
         /** Parse the function name when it's a string not a REAL function */
@@ -369,24 +363,17 @@ class Davai
 
             /** When this is the last partial */
             if($index == $length - 1)
-            {
 
                 /** Return false if it's not a lazy partial, and there's no more partials in the url, */
                 /** and this last partial is not a pure partial */
                 /** ex: "/public/[i:userId]" but "/public/" in the url */
                 if(!$isPure && !$isLazy && !isset($this->parsedUrl[$index + 1]))
-                {
-                    echo "K";
                     return false;
-                }
-            }
+
 
             /** Return false if it's a pure rule but not the same as the captured content */
             if($isPure && $rule != $content)
-            {
-                echo 'A';
                 return false;
-            }
 
 
             /** Skip when it's a pure rule and the same as the captured content, */
@@ -395,10 +382,7 @@ class Davai
                 /** But return false if this partial is the last one, and there's more partials in the url */
                 /** ex: "/hello/" but "/hello/world/" in the url */
                 if($index == $length - 1 && $index < $urlLength - 1)
-                {
-                    echo 'B';
                     return false;
-                }
 
                 /** Going to the next partial if there's more partials in the url */
                 elseif($index != $urlLength - 1)
@@ -407,39 +391,19 @@ class Davai
 
             /** Skip it when it's a lazy rule, */
             if($isLazy)
-            {
 
                 /** and we captured the empty content, */
                 if(!$content)
-                {
-                    echo 'C';
                     return true;
-                }
-            }
 
 
             /** Use regEx to validate the captured content */
             $regEx = $this->getRule($rule);
             preg_match($regEx, $content, $matched);
 
-            /** We don't need the content If the content is not captured by the regex */
-            if(!isset($matched[0]))
-            {
-                echo 'D';
-                echo var_dump($regEx);
-                echo "\n";
-                echo var_dump($content);
-                echo "\n";
-                echo var_dump($matched);
-                return false;
-            }
-
             /** Return false if the content is not matched with the regEx */
-            if($content != $matched[0])
-            {
-                echo 'E';
+            if(!isset($matched[0]) || $content != $matched[0])
                 return false;
-            }
         }
 
         return true;

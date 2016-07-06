@@ -222,6 +222,8 @@ class Davai
         if(!$this->validateRules())
             return $this;
 
+        echo "V";
+
         /** Convert the captured url contents to the variables */
         $this->analyzeVariables();
 

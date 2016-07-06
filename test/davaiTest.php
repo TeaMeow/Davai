@@ -19,6 +19,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testRoute()
     {
         $_SERVER['REQUEST_URI']    = '/test/user';
+        echo var_dump($_SERVER['REQUEST_URI']);
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $Davai                     = new Davai();
         $GLOBALS['SUCCESS']        = false;

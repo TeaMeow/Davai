@@ -368,7 +368,10 @@ class Davai
 
             /** Return false if it's a pure rule but not the same as the captured content */
             if($isPure && $rule != $content)
+            {
+                echo 'A';
                 return false;
+            }
 
 
             /** Skip when it's a pure rule and the same as the captured content, */
@@ -377,7 +380,10 @@ class Davai
                 /** But return false if this partial is the last one, and there's more partials in the url */
                 /** ex: "/hello/" but "/hello/world/" in the url */
                 if($index == $length - 1 && $index < $urlLength - 1)
+                {
+                    echo 'B';
                     return false;
+                }
 
                 /** Going to the next partial if there's more partials in the url */
                 elseif($index != $urlLength - 1)
@@ -386,10 +392,15 @@ class Davai
 
             /** Skip it when it's a lazy rule, */
             if($isLazy)
+            {
 
                 /** and we captured the empty content, */
                 if(!$content)
+                {
+                    echo 'C';
                     return true;
+                }
+            }
 
 
             /** Use regEx to validate the captured content */
@@ -398,11 +409,17 @@ class Davai
 
             /** We don't need the content If the content is not captured by the regex */
             if(!isset($matched[0]))
+            {
+                echo 'D';
                 return false;
+            }
 
             /** Return false if the content is not matched with the regEx */
             if($content != $matched[0])
+            {
+                echo 'E';
                 return false;
+            }
         }
 
         return true;

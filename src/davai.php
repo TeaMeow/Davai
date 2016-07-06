@@ -411,7 +411,10 @@ class Davai
             if(!isset($matched[0]))
             {
                 echo 'D';
+                echo var_dump($regEx);
+                echo "\n";
                 echo var_dump($content);
+                echo "\n";
                 echo var_dump($matched);
                 return false;
             }

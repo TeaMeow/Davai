@@ -1,6 +1,14 @@
 <?php
 require 'davai.php';
 
+class A
+{
+    function b()
+    {
+        $GLOBALS['SUCCESS'] = true;
+    }
+}
+
 class DavaiTest extends \PHPUnit_Framework_TestCase
 {
     function testRoute()
@@ -26,14 +34,6 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $_SERVER['REQUEST_URI']    = '/test/user';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $GLOBALS['SUCCESS']        = false;
-
-        class A
-        {
-            function b()
-            {
-                $GLOBALS['SUCCESS'] = true;
-            }
-        }
 
         $Davai->get('/test/user', 'b#A');
 

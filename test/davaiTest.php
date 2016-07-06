@@ -22,11 +22,10 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $Davai                     = new Davai();
         $GLOBALS['SUCCESS']        = false;
-        a();
-        $Davai->get('/test/user', 'a');
-        echo var_dump($Davai);
 
-        $this->assertEquals(true, $GLOBALS['SUCCESS']);
+        $Davai->get('/test/user', 'a');
+
+        $this->assertTrue($GLOBALS['SUCCESS']);
     }
 
     function testRouteWithClass()
@@ -38,7 +37,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
 
         $Davai->get('/test/user', 'A#b');
 
-        $this->assertEquals(true, $GLOBALS['SUCCESS']);
+        $this->assertTrue($GLOBALS['SUCCESS']);
     }
 
     function testRouteWithAnonymouseFunction()
@@ -53,7 +52,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
             $GLOBALS['SUCCESS'] = true;
         });
 
-        $this->assertEquals(true, $GLOBALS['SUCCESS']);
+        $this->assertTrue($GLOBALS['SUCCESS']);
     }
 
     function testCaptureRoute()
@@ -64,9 +63,8 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $GLOBALS['SUCCESS']        = false;
 
         $Davai->get('/test/user/[i:userId]', 'a');
-        echo var_dump($Davai);
 
-        $this->assertEquals(true, $GLOBALS['SUCCESS']);
+        $this->assertTrue($GLOBALS['SUCCESS']);
     }
 
     function testFalseCaptureRoute()
@@ -78,7 +76,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
 
         $Davai->get('/test/user/[i:userId]', 'a');
 
-        $this->assertEquals(false, $GLOBALS['SUCCESS']);
+        $this->assertFalse($GLOBALS['SUCCESS']);
     }
 
     function testDoubleCaptureRoute()
@@ -90,7 +88,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
 
         $Davai->get('/test/user/[i:userId]/[i:userId]', 'a');
 
-        $this->assertEquals(true, $GLOBALS['SUCCESS']);
+        $this->assertTrue($GLOBALS['SUCCESS']);
     }
 
     function testDoubleFalseCaptureRoute()
@@ -102,19 +100,55 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
 
         $Davai->get('/test/user/[i:userId]/[i:postId]', 'a');
 
-        $this->assertEquals(false, $GLOBALS['SUCCESS']);
+        $this->assertFalse($GLOBALS['SUCCESS']);
     }
 
     function testLazyCaptureRoute()
+    {
+        $_SERVER['REQUEST_URI']    = '/test/user';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $Davai                     = new Davai();
+        $GLOBALS['SUCCESS']        = false;
+
+        $Davai->get('/test/user/[a:username?]', 'a');
+
+        $this->assertTrue($GLOBALS['SUCCESS']);
+    }
+
+    function testFalseLazyCaptureRoute()
     {
         $_SERVER['REQUEST_URI']    = '/test/user/abc/abc';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $Davai                     = new Davai();
         $GLOBALS['SUCCESS']        = false;
 
-        $Davai->get('/test/user/[i:userId?]', 'a');
+        $Davai->get('/test/user/[a:username?]', 'a');
 
-        $this->assertEquals(true, $GLOBALS['SUCCESS']);
+        $this->assertFalse($GLOBALS['SUCCESS']);
+    }
+
+    function testDoubleLazyCaptureRoute()
+    {
+        $_SERVER['REQUEST_URI']    = '/test/user/abc';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $Davai                     = new Davai();
+        $GLOBALS['SUCCESS']        = false;
+
+        $Davai->get('/test/user/[a:username?]/[a:postName?]', 'a');
+
+        $this->assertFalse($GLOBALS['SUCCESS']);
+    }
+
+    function testDoubleFalseLazyCaptureRoute()
+    {
+        $_SERVER['REQUEST_URI']    = '/test/user/abc/abc/abc';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $Davai                     = new Davai();
+        $GLOBALS['SUCCESS']        = false;
+
+        $Davai->get('/test/user/[a:username?]/[a:postName?]', 'a');
+
+        $this->assertFalse($GLOBALS['SUCCESS']);
     }
 }
 ?>

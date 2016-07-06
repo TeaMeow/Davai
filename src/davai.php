@@ -411,6 +411,8 @@ class Davai
             if(!isset($matched[0]))
             {
                 echo 'D';
+                echo var_dump($content);
+                echo var_dump($matched);
                 return false;
             }
 

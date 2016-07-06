@@ -6,7 +6,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
     function testRoute()
     {
         $Davai      = new Davai();
-        $Davai->url = 'http://www.example.com/test/user';
+        $Davai->url = '/test/user';
         $isSuccess  = false;
 
         function a()

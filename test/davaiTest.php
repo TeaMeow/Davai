@@ -14,7 +14,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
             $isSuccess = true;
         }
 
-        $Davai->get('/test/user/[i:userId]/[i:page?]', 'a');
+        $Davai->get('/test/user', 'a');
 
         $this->assertEquals(true, $isSuccess);
     }

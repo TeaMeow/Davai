@@ -24,6 +24,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $GLOBALS['SUCCESS']        = false;
 
         $Davai->get('/test/user', 'a');
+        echo var_dump($Davai);
 
         $this->assertEquals(true, $GLOBALS['SUCCESS']);
     }
@@ -63,6 +64,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $GLOBALS['SUCCESS']        = false;
 
         $Davai->get('/test/user/[i:userId]', 'a');
+        echo var_dump($Davai);
 
         $this->assertEquals(true, $GLOBALS['SUCCESS']);
     }

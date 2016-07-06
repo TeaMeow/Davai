@@ -396,8 +396,9 @@ class Davai
             $regEx = $this->getRule($rule);
             preg_match($regEx, $content, $matched);
 
+            /** We don't need the content If the content is not captured by the regex */
             if(!isset($matched[0]))
-                echo var_dump($content) . '||' .  var_dump($matched);
+                return false;
 
             /** Return false if the content is not matched with the regEx */
             if($content != $matched[0])

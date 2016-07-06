@@ -47,7 +47,7 @@ class DavaiTest extends \PHPUnit_Framework_TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $isSuccess                 = false;
 
-        $Davai->get('/test/user', function(use $isSuccess)
+        $Davai->get('/test/user', function()
         {
             $isSuccess = true;
         });

@@ -130,8 +130,6 @@ class Davai
                 return $this;
                 break;
         }
-
-        return;
     }
 
 

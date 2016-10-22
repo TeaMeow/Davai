@@ -65,7 +65,7 @@ $davai = new Davai();
 
 接下來開始撰寫路徑，其中的 `[i:userID]` 的 `i` 意思是任何數字，而 `userID` 則是變數名稱，
 
-你可以再詳細的教學文件中找到說明。
+你可以在詳細的教學文件中找到說明。
 
 ```php
 $davai->get('/user/[i:userId]', function($userId)

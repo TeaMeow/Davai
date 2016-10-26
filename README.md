@@ -32,19 +32,19 @@
 
 # 範例
 
-你需要先在你的 `.htacess` 新增這樣的規則，並將之後的網頁都導向 `index.php`，
-
-如此一來才能夠在 `index.php` 中處理任何的路由事宜。
+若你在使用 Apache Server， 
+請先新增一個 `.htacess` 檔案，並加入以下內容。
+且請將所有 requests 都導向 `index.php`，
+如此一來 Davai 才能接收任何的路由事宜並進行處理。
 
 ```
 RewriteEngine on
-# PHP Extension To None PHP Extension
+# PHP Extension To None-PHP Extensions
 # RewriteRule ^ /%1 [R=301,NE,L]
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/(.+)\.php[^\s]* [NC]
 RewriteRule ^ - [R=404,L]
 
-
-# Hide Extension Of PHP
+# Hide PHP Extensions
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteCond %{REQUEST_FILENAME} !-l 
@@ -63,9 +63,9 @@ $davai = new Davai();
 
 &nbsp;
 
-接下來開始撰寫路徑，其中的 `[i:userID]` 的 `i` 意思是任何數字，而 `userID` 則是變數名稱，
+接下來開始撰寫路徑，其中的 `[i:userID]` 的 `i` 代表「任何數字」，而 `userID` 則代表「變數名稱」。
 
-你可以在詳細的教學文件中找到說明。
+你稍後可以在詳細的教學文件中找到說明。
 
 ```php
 $davai->get('/user/[i:userId]', function($userId)
